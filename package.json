@@ -1,8 +1,9 @@
 {
   "name": "@xialeistudio/wxcrypto",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "wechat message encrypt/decrypt library",
   "main": "index.js",
+  "types": "index.d.ts",
   "scripts": {
     "build": "tsc -w"
   },
