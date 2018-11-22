@@ -24,7 +24,7 @@ export default class WxCrypto {
     constructor(token: string, appid: string, encodingAESKey: string) {
         this.token = token;
         this.appid = appid;
-        this.aesKey = new Buffer(`${encodingAESKey}=`, 'base64');
+        this.aesKey =  Buffer.from(`${encodingAESKey}=`, 'base64');
         this.iv = this.aesKey.slice(0, 16);
     }
 
@@ -90,11 +90,11 @@ export default class WxCrypto {
     }
 
     public encrypt(xmlMsg: any) {
-        const random16 = new Buffer(parseInt((Math.random() * 100000000000).toString(), 10));
-        const msg = new Buffer(xmlMsg);
-        const msgLength = new Buffer(4);
+        const random16 = Buffer.from(parseInt((Math.random() * 100000000000).toString(), 10));
+        const msg = Buffer.from(xmlMsg);
+        const msgLength = Buffer.alloc(4);
         msgLength.writeUInt32BE(msg.length, 0);
-        const corpId = new Buffer(this.appid);
+        const corpId = Buffer.from(this.appid);
         const rawMsg = Buffer.concat([random16, msgLength, msg, corpId]);
         const cipher = crypto.createCipheriv('aes-256-cbc', this.aesKey, this.iv);
         const cipheredMsg = Buffer.concat([cipher.update(rawMsg), cipher.final()]);
@@ -135,7 +135,7 @@ export default class WxCrypto {
         const blockSize = 32;
         const strSize = buff.length;
         const amountToPad = blockSize - (strSize % blockSize);
-        const pad = new Buffer(amountToPad - 1);
+        const pad = Buffer.alloc(amountToPad - 1);
         pad.fill(String.fromCharCode(amountToPad));
         return Buffer.concat([buff, pad]);
     }
