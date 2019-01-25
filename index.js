@@ -53,7 +53,7 @@ var WxCrypto = (function () {
     function WxCrypto(token, appid, encodingAESKey) {
         this.token = token;
         this.appid = appid;
-        this.aesKey = new Buffer(encodingAESKey + "=", 'base64');
+        this.aesKey = Buffer.from(encodingAESKey + "=", 'base64');
         this.iv = this.aesKey.slice(0, 16);
     }
     /**
@@ -124,11 +124,11 @@ var WxCrypto = (function () {
         return buildXML.buildObject(result);
     };
     WxCrypto.prototype.encrypt = function (xmlMsg) {
-        var random16 = new Buffer(parseInt((Math.random() * 100000000000).toString(), 10));
-        var msg = new Buffer(xmlMsg);
-        var msgLength = new Buffer(4);
+        var random16 = Buffer.from(parseInt((Math.random() * 100000000000).toString(), 10));
+        var msg = Buffer.from(xmlMsg);
+        var msgLength = Buffer.alloc(4);
         msgLength.writeUInt32BE(msg.length, 0);
-        var corpId = new Buffer(this.appid);
+        var corpId = Buffer.from(this.appid);
         var rawMsg = Buffer.concat([random16, msgLength, msg, corpId]);
         var cipher = crypto.createCipheriv('aes-256-cbc', this.aesKey, this.iv);
         var cipheredMsg = Buffer.concat([cipher.update(rawMsg), cipher.final()]);
@@ -165,7 +165,7 @@ var WxCrypto = (function () {
         var blockSize = 32;
         var strSize = buff.length;
         var amountToPad = blockSize - (strSize % blockSize);
-        var pad = new Buffer(amountToPad - 1);
+        var pad = Buffer.alloc(amountToPad - 1);
         pad.fill(String.fromCharCode(amountToPad));
         return Buffer.concat([buff, pad]);
     };
